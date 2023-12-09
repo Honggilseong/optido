@@ -9,6 +9,7 @@ import {
 import { useAuthModal } from "@/hooks/use-auth-modal";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 import GoogleLogo from "@/public/google-logo.png";
 import Image from "next/image";
@@ -19,8 +20,18 @@ const LoginPage = () => {
 
   const router = useRouter();
 
+  const [isLoginLoading, setIsLoginLoading] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
+  const handleGoogleLogin = async () => {
+    setIsLoginLoading(true);
+    try {
+      await signIn("google", { callbackUrl: "/dashboard" });
+    } catch (error) {
+    } finally {
+      setIsLoginLoading(false);
+    }
+  };
   const onOpenChange = () => {
     router.back();
     onClose();
@@ -42,7 +53,11 @@ const LoginPage = () => {
           </DialogDescription>
         </DialogHeader>
         <div style={{ marginTop: 30 }} />
-        <div className="flex items-center cursor-pointer border py-2 px-4">
+        <div
+          className="flex items-center cursor-pointer border py-2 px-4"
+          role="button"
+          onClick={handleGoogleLogin}
+        >
           <div
             className="flex items-center justify-center"
             style={{ width: 320 }}
