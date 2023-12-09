@@ -6,6 +6,8 @@ import { useScrollTop } from "@/hooks/use-scroll-top";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/theme-button";
+
 import { cn } from "@/lib/utils";
 
 const Navbar = () => {
@@ -29,9 +31,8 @@ const Navbar = () => {
     >
       <Logo />
       <div className="md:ml-auto flex md:justify-end items-center gap-x-2 w-full">
-        <Button variant="outline" onClick={handleLogin}>
-          Login
-        </Button>
+        <Button onClick={handleLogin}>Login</Button>
+        <ThemeToggle />
       </div>
     </div>
   );
