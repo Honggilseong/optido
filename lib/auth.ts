@@ -4,6 +4,9 @@ import { db } from "@/lib/db";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 
 export const authOptions: NextAuthOptions = {
+  session: {
+    strategy: "jwt",
+  },
   adapter: PrismaAdapter(db),
   providers: [
     GoogleProvider({
@@ -12,4 +15,15 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET!,
+  pages: {
+    signIn: "/login",
+  },
+  callbacks: {
+    async jwt({ token, user }) {
+      return { ...token, ...user };
+    },
+    async session({ session }) {
+      return session;
+    },
+  },
 };
