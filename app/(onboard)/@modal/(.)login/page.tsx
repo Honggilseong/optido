@@ -54,7 +54,7 @@ const LoginPage = () => {
         </DialogHeader>
         <div style={{ marginTop: 30 }} />
         <div
-          className="flex items-center cursor-pointer border py-2 px-4"
+          className="flex items-center cursor-pointer border py-2 px-4 dark:hover:bg-black hover:bg-slate-100"
           role="button"
           onClick={handleGoogleLogin}
         >
