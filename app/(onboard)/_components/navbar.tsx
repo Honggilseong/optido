@@ -1,26 +1,15 @@
 "use client";
 import Logo from "@/components/logo";
 
-import { useAuthModal } from "@/hooks/use-auth-modal";
 import { useScrollTop } from "@/hooks/use-scroll-top";
-import { useRouter } from "next/navigation";
 
-import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-button";
 
 import { cn } from "@/lib/utils";
+import LoginButton from "./login-button";
 
 const Navbar = () => {
   const scrolled = useScrollTop();
-
-  const router = useRouter();
-
-  const onOpen = useAuthModal((state) => state.onOpen);
-
-  const handleLogin = () => {
-    onOpen();
-    router.push("/login");
-  };
 
   return (
     <div
@@ -31,7 +20,7 @@ const Navbar = () => {
     >
       <Logo />
       <div className="md:ml-auto flex md:justify-end items-center gap-x-2 w-full">
-        <Button onClick={handleLogin}>Login</Button>
+        <LoginButton />
         <ThemeToggle />
       </div>
     </div>
