@@ -43,6 +43,9 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  documents     Document[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model VerificationToken {
@@ -51,4 +54,21 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+model Document {
+  id             String   @id @default(uuid())
+  title          String
+  userId         String
+  user           User     @relation(fields: [userId], references: [id])
+  isArchived     Boolean  @default(false)
+  isPublished    Boolean  @default(false)
+  parentDocument String?
+  content        String?
+  icon           String?
+  coverImage     String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([userId])
+  @@index([userId, parentDocument])
 }
