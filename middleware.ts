@@ -8,7 +8,7 @@ export async function middleware(request: NextRequest) {
   });
   const url = request.nextUrl.clone();
 
-  const protectedRoutes = ["/dashboard"];
+  const protectedRoutes = ["/dashboard", "/document", "/todo"];
 
   if (
     protectedRoutes.some((path) => url.pathname.startsWith(path)) &&
@@ -24,4 +24,6 @@ export async function middleware(request: NextRequest) {
   }
 }
 
-export const config = { matcher: ["/login", "/dashboard/:path*"] };
+export const config = {
+  matcher: ["/login", "/dashboard/:path*", "/document/:path*", "/todo"],
+};
