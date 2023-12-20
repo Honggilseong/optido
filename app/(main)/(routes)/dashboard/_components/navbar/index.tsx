@@ -1,6 +1,6 @@
 import { Settings, User } from "lucide-react";
 import NavItem from "./nav-item";
-import UserProfile from "./user-profile";
+import UserProfile from "../../../../../../components/user-profile";
 
 const navItems = [
   {
