@@ -20,7 +20,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { deleteDocument } from "@/actions/delete-document";
+import { archiveDocument } from "@/actions/archive-document";
 import { useQueryClient } from "@tanstack/react-query";
 import { Document } from "@prisma/client";
 
@@ -53,19 +53,14 @@ const DocumentItem = ({
     onSuccess: (data) => {
       queryClient.setQueryData(
         ["documents", data.parentDocument ? data.parentDocument : "root"],
-        (oldData: Document[]) => [...oldData, data]
+        (oldData: Document[]) => [data, ...oldData]
       );
     },
     onError: (error) => console.log(error),
   });
-  const { execute: deleteExecute } = useAction(deleteDocument, {
-    onSuccess: (data) => {
-      queryClient.setQueryData(
-        ["documents", data.parentDocument ? data.parentDocument : "root"],
-        (oldData: Document[]) => {
-          return oldData.filter((document) => document.id !== data.id);
-        }
-      );
+  const { execute: archiveExecute } = useAction(archiveDocument, {
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["documents"] });
     },
     onError: (error) => console.log(error),
   });
@@ -96,11 +91,11 @@ const DocumentItem = ({
     if (!id) return;
     toast.loading("Moving to trash...");
     try {
-      deleteExecute({ documentId: id });
-      toast.success("Note Moved to trash!");
+      archiveExecute({ documentId: id });
+      toast.success("Document moved to trash!");
     } catch (error) {
       console.log(error);
-      toast.error("Failed to archive note.");
+      toast.error("Failed to archive document.");
     }
   };
   return (
@@ -127,7 +122,7 @@ const DocumentItem = ({
           ) : (
             <Icon className="shrink-0 h-[18px] mr-2 text-muted-foreground" />
           )}
-          <span>{label}</span>
+          <span className="truncate">{label}</span>
         </div>
         <div className="flex gap-x-2">
           <DropdownMenu>

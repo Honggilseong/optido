@@ -4,8 +4,8 @@ import UserProfile from "@/components/user-profile";
 import DocumentListItem from "./document-list-item";
 
 import { cn } from "@/lib/utils";
-import { ChevronsLeft, MenuIcon, Plus } from "lucide-react";
-import { ElementRef, useRef, useState } from "react";
+import { ChevronsLeft, MenuIcon, Plus, Trash } from "lucide-react";
+import { ElementRef, useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "usehooks-ts";
 
 import { useAction } from "@/hooks/use-action";
@@ -13,8 +13,17 @@ import { createDocument } from "@/actions/create-document";
 
 import { Button } from "@/components/ui/button";
 import { useQueryClient } from "@tanstack/react-query";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import DocumentTrash from "./document-trash";
+import { useParams } from "next/navigation";
+import Header from "./header";
 
 const Navbar = () => {
+  const params = useParams();
   const isResizingRef = useRef(false);
   const sidebarRef = useRef<ElementRef<"aside">>(null);
   const navbarRef = useRef<ElementRef<"div">>(null);
@@ -86,6 +95,13 @@ const Navbar = () => {
   const handleCreate = () => {
     execute({ title: "Untitled" });
   };
+
+  useEffect(() => {
+    const sidebarWidth = window.getComputedStyle(sidebarRef.current!).width;
+
+    setIsCollapsed(isMobile || sidebarWidth === "0px");
+  }, [isMobile]);
+
   return (
     <>
       <aside
@@ -114,6 +130,24 @@ const Navbar = () => {
           <Plus className="ml-1 w-5 h-5" />
         </Button>
         <DocumentListItem />
+
+        <Popover>
+          <div className="h-full flex items-end">
+            <PopoverTrigger className="w-full  hover:bg-primary/5">
+              <div className="flex items-center px-4 py-3">
+                <Trash className="shrink-0 h-[18px] mr-2 text-muted-foreground" />
+                <span className="text-muted-foreground">Trash</span>
+              </div>
+            </PopoverTrigger>
+          </div>
+          <PopoverContent
+            side={isMobile ? "bottom" : "right"}
+            className="p-0 w-72"
+          >
+            <DocumentTrash />
+          </PopoverContent>
+        </Popover>
+
         <div
           onMouseDown={handleMouseDown}
           onClick={resetWidth}
@@ -128,15 +162,19 @@ const Navbar = () => {
           isMobile && "left-0 w-full"
         )}
       >
-        <nav className="bg-transparent px-3 py-2 w-full">
-          {isCollapsed && (
-            <MenuIcon
-              onClick={resetWidth}
-              role="button"
-              className="h-6 w-6 text-muted-foreground"
-            />
-          )}
-        </nav>
+        {!!params.documentId ? (
+          <Header isCollapsed={isCollapsed} onResetWidth={resetWidth} />
+        ) : (
+          <nav className="bg-transparent px-3 py-2 w-full">
+            {isCollapsed && (
+              <MenuIcon
+                onClick={resetWidth}
+                role="button"
+                className="h-6 w-6 text-muted-foreground"
+              />
+            )}
+          </nav>
+        )}
       </div>
     </>
   );
