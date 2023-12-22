@@ -21,13 +21,9 @@ const handler = async (data: InputType): Promise<ReturnType> => {
   let document;
 
   try {
-    document = await db.document.update({
+    document = await db.document.delete({
       where: {
         id: data.documentId,
-        userId: session?.user.id,
-      },
-      data: {
-        isArchived: true,
       },
     });
   } catch (error) {
