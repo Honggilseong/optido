@@ -1,7 +1,12 @@
 "use client";
+import { deleteDocument } from "@/actions/delete-document";
+import { undoDocument } from "@/actions/undo-document";
 import ConfirmModal from "@/components/confirm-modal";
 import { Input } from "@/components/ui/input";
+import { useAction } from "@/hooks/use-action";
 import useTrash from "@/hooks/use-trash";
+import { Document } from "@prisma/client";
+import { useQueryClient } from "@tanstack/react-query";
 import { Search, Trash, Undo } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -9,8 +14,25 @@ import React, { useState } from "react";
 
 const DocumentTrash = () => {
   const router = useRouter();
-
+  const queryClient = useQueryClient();
   const [searchValue, setSearchValue] = useState("");
+
+  const { execute: undoDocumentExecute } = useAction(undoDocument, {
+    onSuccess: (data) => {
+      const dataIdsSet = new Set(data);
+      queryClient.setQueryData(["trash"], (oldData: Document[]) =>
+        oldData.filter((document) => !dataIdsSet.has(document.id))
+      );
+      queryClient.invalidateQueries({ queryKey: ["documents"] });
+    },
+  });
+  const { execute: deleteDocumentExecute } = useAction(deleteDocument, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(["trash"], (oldData: Document[]) =>
+        oldData.filter((document) => document.id !== data.id)
+      );
+    },
+  });
 
   const query = useTrash();
   const filteredDocuments = query.data?.filter((document) =>
@@ -25,8 +47,11 @@ const DocumentTrash = () => {
     documentId: string
   ) => {
     event.stopPropagation();
+    undoDocumentExecute({ documentId });
   };
-  const onRemove = (documentId: string) => {};
+  const onRemove = (documentId: string) => {
+    deleteDocumentExecute({ documentId });
+  };
   return (
     <div className="text-sm max-h-80 overflow-y-auto">
       <div className="flex items-center gap-x-1 p-2">
