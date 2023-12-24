@@ -63,7 +63,7 @@ model Document {
   isArchived     Boolean  @default(false)
   isPublished    Boolean  @default(false)
   parentDocument String?
-  content        String?
+  content        String?  @db.Text
   icon           String?
   coverImage     String?
   createdAt      DateTime @default(now())
