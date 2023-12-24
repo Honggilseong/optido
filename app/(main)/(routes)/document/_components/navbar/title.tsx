@@ -74,7 +74,7 @@ const Title = ({ data }: TitleProps) => {
     debounce((newTitle: string) => {
       updateTitle({ title: newTitle, documentId: params.documentId as string });
     }, 200),
-    []
+    [params.documentId]
   );
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
