@@ -47,27 +47,29 @@ const DocumentListItem = ({
       >
         No pages
       </p>
-      {query.data?.map((document) => (
-        <div key={document.id}>
-          <DocumentItem
-            id={document.id}
-            onClick={() => onRedirect(document.id)}
-            label={document.title}
-            icon={FileIcon}
-            documentIcon={document.icon || ""}
-            active={params.documentId === document.id}
-            depth={depth}
-            onExpand={() => onExpand(document.id)}
-            expanded={expanded[document.id]}
-          />
-          {expanded[document.id] && (
-            <DocumentListItem
-              parentDocumentId={document.id}
-              depth={depth + 1}
+      <div className="h-full overflow-y-auto">
+        {query.data?.map((document) => (
+          <div key={document.id}>
+            <DocumentItem
+              id={document.id}
+              onClick={() => onRedirect(document.id)}
+              label={document.title}
+              icon={FileIcon}
+              documentIcon={document.icon || ""}
+              active={params.documentId === document.id}
+              depth={depth}
+              onExpand={() => onExpand(document.id)}
+              expanded={expanded[document.id]}
             />
-          )}
-        </div>
-      ))}
+            {expanded[document.id] && (
+              <DocumentListItem
+                parentDocumentId={document.id}
+                depth={depth + 1}
+              />
+            )}
+          </div>
+        ))}
+      </div>
     </>
   );
 };

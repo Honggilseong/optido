@@ -19,7 +19,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import DocumentTrash from "./document-trash";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Header from "./header";
 
 const Navbar = () => {
@@ -29,13 +29,14 @@ const Navbar = () => {
   const navbarRef = useRef<ElementRef<"div">>(null);
   const isMobile = useMediaQuery("(max-width: 768px)");
   const queryClient = useQueryClient();
-
+  const router = useRouter();
   const { execute } = useAction(createDocument, {
     onSuccess: (data) => {
       queryClient.setQueryData(
         ["documents", data.parentDocument ? data.parentDocument : "root"],
         (oldData: Document[]) => [...oldData, data]
       );
+      router.push(`/document/${data.id}`);
     },
     onError: (error) => console.log(error),
   });
@@ -132,8 +133,8 @@ const Navbar = () => {
         <DocumentListItem />
 
         <Popover>
-          <div className="h-full flex items-end">
-            <PopoverTrigger className="w-full  hover:bg-primary/5">
+          <div className="flex items-end">
+            <PopoverTrigger className="w-full hover:bg-primary/20">
               <div className="flex items-center px-4 py-3">
                 <Trash className="shrink-0 h-[18px] mr-2 text-muted-foreground" />
                 <span className="text-muted-foreground">Trash</span>

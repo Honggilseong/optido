@@ -22,7 +22,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { archiveDocument } from "@/actions/archive-document";
 import { useQueryClient } from "@tanstack/react-query";
-import { Document } from "@prisma/client";
+
+import { useRouter } from "next/navigation";
 
 type DocumentItemProps = {
   id?: string;
@@ -49,14 +50,19 @@ const DocumentItem = ({
   id,
 }: DocumentItemProps) => {
   const queryClient = useQueryClient();
+  const router = useRouter();
   const { execute: createExecute } = useAction(createDocument, {
     onSuccess: (data) => {
-      queryClient.setQueryData(
-        ["documents", data.parentDocument ? data.parentDocument : "root"],
-        (oldData: Document[]) => [data, ...oldData]
-      );
+      queryClient.invalidateQueries({ queryKey: ["documents"] });
+      toast.success("New document created!");
+      onExpand?.();
+      router.push(`/document/${data.id}`);
     },
-    onError: (error) => console.log(error),
+    onError: (error) => {
+      console.log(error);
+
+      toast.error('"Failed to create a new document"');
+    },
   });
   const { execute: archiveExecute } = useAction(archiveDocument, {
     onSuccess: () => {
@@ -76,15 +82,10 @@ const DocumentItem = ({
   ) => {
     event.stopPropagation();
     toast.loading("Creating a new document");
-    try {
-      await createExecute({
-        title: "Untitled",
-        parentDocument: id,
-      });
-      toast.success("New document created!");
-    } catch (error) {
-      toast.error('"Failed to create a new document"');
-    }
+    createExecute({
+      title: "Untitled",
+      parentDocument: id,
+    });
   };
   const onArchive = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     event.stopPropagation();
@@ -109,7 +110,7 @@ const DocumentItem = ({
       )}
     >
       <div className="flex items-center justify-between w-full">
-        <div className="flex">
+        <div className="flex max-w-[75%]">
           <div
             role="button"
             className="h-full rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600 mr-1"
