@@ -11,12 +11,24 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { LogOut } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
+import { Skeleton } from "./ui/skeleton";
 
 const UserProfile = () => {
-  const { data } = useSession();
+  const { data, status } = useSession();
+
   const handleLogout = () => {
     signOut({ callbackUrl: "/" });
   };
+
+  if (status === "loading") {
+    return (
+      <div className="flex flex-col items-center">
+        <Skeleton className="rounded-full w-12 h-12 bg-muted-foreground/20" />
+        <Skeleton className="mt-4 w-[40%] h-5 bg-muted-foreground/20" />
+      </div>
+    );
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="flex flex-col items-center">
