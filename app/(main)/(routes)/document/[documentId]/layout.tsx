@@ -3,7 +3,7 @@ const DocumentIdLayout = async ({
 }: {
   children: React.ReactNode;
 }) => {
-  return <main className="w-full">{children}</main>;
+  return <main className="w-full overflow-x-hidden">{children}</main>;
 };
 
 export default DocumentIdLayout;
