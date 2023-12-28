@@ -35,6 +35,7 @@ const DocumentTrash = () => {
   });
 
   const query = useTrash();
+
   const filteredDocuments = query.data?.filter((document) =>
     document.title.toLowerCase().includes(searchValue.toLowerCase())
   );
@@ -64,7 +65,7 @@ const DocumentTrash = () => {
         />
       </div>
       <div className="mt-2 px-1 pb-1">
-        {query.data ? (
+        {query.data?.length !== 0 ? (
           filteredDocuments?.map((document) => (
             <div
               key={document.id}
