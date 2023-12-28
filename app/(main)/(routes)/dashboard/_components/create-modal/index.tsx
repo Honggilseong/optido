@@ -29,14 +29,14 @@ const CreateModal = () => {
         <div className="grid grid-cols-2 h-52 w-full gap-x-6">
           <Link
             href="/document"
-            className="hover:bg-black rounded-md border cursor-pointer flex items-center justify-center flex-col"
+            className="hover:dark:bg-black hover:bg-primary/10 rounded-md border cursor-pointer flex items-center justify-center flex-col relative"
           >
             <BookText className="w-20 h-20" />
             <p className="font-bold text-xl mt-4">Create a document</p>
           </Link>
           <Link
             href="/todo"
-            className="hover:bg-black rounded-md border cursor-pointer flex items-center justify-center flex-col"
+            className="hover:dark:bg-black hover:bg-primary/10 rounded-md border cursor-pointer flex items-center justify-center flex-col"
           >
             <ListTodo className="w-20 h-20" />
             <p className="font-bold text-xl mt-4">Create a Todo list</p>
