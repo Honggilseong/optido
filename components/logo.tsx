@@ -25,7 +25,20 @@ const Logo = ({ width = 100, height = 60, className }: LogoProps) => {
           : router.push("/")
       }
     >
-      <Image src="/logo.png" height={height} width={width} alt="logo" />
+      <Image
+        src="/logo.png"
+        height={height}
+        width={width}
+        alt="logo"
+        className="dark:hidden block"
+      />
+      <Image
+        src="/logo-dark.png"
+        height={height}
+        width={width}
+        alt="logo"
+        className="dark:block hidden"
+      />
     </div>
   );
 };
