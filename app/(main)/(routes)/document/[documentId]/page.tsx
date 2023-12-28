@@ -16,23 +16,15 @@ const DocumentIdPage = () => {
     () => dynamic(() => import("./_components/editor"), { ssr: false }),
     []
   );
+
   const queryClient = useQueryClient();
   const { execute: updateContent } = useAction(updateDocumentContent, {
     onSuccess: (data) => {
-      queryClient.setQueryData(
-        ["document", params.documentId],
-        (oldData: Document) => ({ ...oldData, title: data.title })
-      );
-      queryClient.setQueryData(
-        ["documents", data.parentDocument ? data.parentDocument : "root"],
-        (oldData: Document[]) =>
-          oldData.map((document) =>
-            document.id === data.id
-              ? { ...document, title: data.title }
-              : document
-          )
-      );
+      queryClient.setQueryData(["document"], (oldData: Document) => [
+        { ...oldData, content: data.content },
+      ]);
     },
+    onError: (error) => console.log(error),
   });
   const params = useParams();
   const query = useDocument();
@@ -45,10 +37,6 @@ const DocumentIdPage = () => {
     }, 2000),
     [params.documentId]
   );
-
-  const onEditorChange = (value: string) => {
-    debouncedUpdateTitle(value);
-  };
 
   if (query.data === undefined) {
     return (
@@ -70,11 +58,14 @@ const DocumentIdPage = () => {
   }
 
   return (
-    <div className="grid grid-cols-4 h-full pb-40">
+    <div className="grid grid-cols-6 md:grid-cols-4 h-full pb-40">
       <div className="col-span-1" />
-      <div className="col-span-2 relative">
+      <div className="col-span-4 md:col-span-2 relative">
         <DocumentIdTitle data={query.data} />
-        <Editor onChange={onEditorChange} initialContent={query.data.content} />
+        <Editor
+          onChange={debouncedUpdateTitle}
+          initialContent={query.data?.content}
+        />
       </div>
       <div className="col-span-1" />
     </div>
