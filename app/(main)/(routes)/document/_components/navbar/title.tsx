@@ -153,8 +153,8 @@ export default Title;
 Title.Skeleton = function TitleSkeleton() {
   return (
     <div className="w-full h-full flex items-center">
-      <Skeleton className="w-[18px] h-[18px]" />
-      <Skeleton className="w-[30%]" />
+      <Skeleton className="w-[30px] h-[30px] bg-muted-foreground/20 mr-3" />
+      <Skeleton className="w-[30%] h-[30px] bg-muted-foreground/20" />
     </div>
   );
 };
