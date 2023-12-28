@@ -126,7 +126,7 @@ const Navbar = () => {
         <div className="mt-16" />
         <UserProfile />
 
-        <Button className="my-6" onClick={handleCreate}>
+        <Button className="my-6" variant="outline" onClick={handleCreate}>
           Create
           <Plus className="ml-1 w-5 h-5" />
         </Button>
