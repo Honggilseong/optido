@@ -2,7 +2,13 @@
 
 import { useTheme } from "next-themes";
 import { BlockNoteEditor } from "@blocknote/core";
-import { BlockNoteView, useBlockNote } from "@blocknote/react";
+import {
+  BlockNoteView,
+  lightDefaultTheme,
+  useBlockNote,
+  Theme,
+  darkDefaultTheme,
+} from "@blocknote/react";
 import "@blocknote/core/style.css";
 import { useEdgeStore } from "@/lib/edgestore";
 
@@ -33,11 +39,27 @@ const Editor = ({ onChange, initialContent, editable, ref }: EditorProps) => {
     uploadFile: handleUpload,
   });
 
+  const darkTheme = {
+    ...darkDefaultTheme,
+    colors: {
+      ...darkDefaultTheme.colors,
+      editor: {
+        text: "#fff",
+        background: "#0a0a0a",
+      },
+    },
+  } satisfies Theme;
+
+  const theme = {
+    dark: darkTheme,
+    light: lightDefaultTheme,
+  };
+
   return (
     <>
       <BlockNoteView
         editor={editor}
-        theme={resolvedTheme === "dark" ? "dark" : "light"}
+        theme={resolvedTheme === "dark" ? theme.dark : theme.light}
       />
     </>
   );
