@@ -100,7 +100,7 @@ const DocumentIdTitle = ({ data }: DocumentIdTitleType) => {
   }, [data?.title]);
 
   return (
-    <div className="w-full mb-10">
+    <div className="w-full mb-10 pl-10">
       {data?.icon ? (
         <div className="p-2 w-[70px] h-[70px] mb-10 hover:bg-primary/10 rounded-md relative group mt-32">
           <IconPicker
