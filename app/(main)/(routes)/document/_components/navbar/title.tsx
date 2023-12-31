@@ -22,7 +22,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import { deleteDocument } from "@/actions/delete-document";
 import ConfirmModal from "@/components/confirm-modal";
-import TitlePDFItem from "./title-pdf-item";
 
 type TitleProps = {
   data?: Document;
@@ -174,7 +173,6 @@ const Title = ({ data }: TitleProps) => {
               <span>Delete</span>
             </div>
           </ConfirmModal>
-          <TitlePDFItem content={data?.content} />
         </PopoverContent>
       </Popover>
     </div>
