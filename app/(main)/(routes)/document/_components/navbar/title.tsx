@@ -10,16 +10,19 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { File } from "lucide-react";
+import { File, MoreHorizontal, Trash } from "lucide-react";
 
 import { debounce } from "lodash";
 import { useAction } from "@/hooks/use-action";
 import { Document } from "@prisma/client";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { updateDocumentIcon } from "@/actions/update-document-icon";
 import { useQueryClient } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
+import { deleteDocument } from "@/actions/delete-document";
+import ConfirmModal from "@/components/confirm-modal";
+import TitlePDFItem from "./title-pdf-item";
 
 type TitleProps = {
   data?: Document;
@@ -28,10 +31,17 @@ type TitleProps = {
 const Title = ({ data }: TitleProps) => {
   const params = useParams();
   const queryClient = useQueryClient();
-
+  const router = useRouter();
   const [title, setTitle] = useState(data?.title || "Untitled");
   const [isEditing, setIsEditing] = useState(false);
   const [isIconOpened, setIsIconOpened] = useState(false);
+
+  const { execute: deleteExecute } = useAction(deleteDocument, {
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["documents"] });
+      router.push("/document");
+    },
+  });
 
   const { execute: updateTitle } = useAction(updateDocumentTitle, {
     onSuccess: (data) => {
@@ -93,55 +103,78 @@ const Title = ({ data }: TitleProps) => {
     setIsIconOpened(false);
   };
 
+  const onDeleteConfirm = () => {
+    deleteExecute({ documentId: params.documentId as string });
+  };
+
   useEffect(() => {
     setTitle(data?.title || "Untitled");
   }, [data]);
 
   return (
-    <div className="flex items-center gap-x-2">
-      <div className="h-6 w-6">
-        {data?.icon ? (
-          <span className="text-[18px]">{data.icon}</span>
-        ) : (
-          <File className="h-6 w-6" />
-        )}
-      </div>
-      <Popover open={isEditing} onOpenChange={(state) => setIsEditing(state)}>
-        <PopoverTrigger asChild>
-          <Button
-            onClick={enableInput}
-            variant="ghost"
-            size="sm"
-            className="rounded-md"
-          >
-            <span className="truncate">{title}</span>
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="p-2">
-          <div className="flex items-center gap-x-2">
-            <IconPicker
-              asChild
-              isOpen={isIconOpened}
-              onChange={onChangeIcon}
-              onOpenChange={(state) => setIsIconOpened(state)}
-            >
-              <Button
-                variant="ghost"
-                className="border p-1 rounded-md text-[18px]"
-                onClick={() => setIsIconOpened(true)}
-              >
-                {data?.icon ? data.icon : <File className="h-6 w-6" />}
-              </Button>
-            </IconPicker>
-            <Input
-              value={title}
+    <div className="flex items-center justify-between gap-x-2 w-full">
+      <div className="flex items-center">
+        <div className="h-6 w-6">
+          {data?.icon ? (
+            <span className="text-[18px]">{data.icon}</span>
+          ) : (
+            <File className="h-6 w-6" />
+          )}
+        </div>
+        <Popover open={isEditing} onOpenChange={(state) => setIsEditing(state)}>
+          <PopoverTrigger asChild>
+            <Button
               onClick={enableInput}
-              onBlur={disableInput}
-              onChange={onChange}
-              onKeyDown={onKeyDown}
-              className="h-9 px-2 focus-visible:ring-transparent flex-1"
-            />
-          </div>
+              variant="ghost"
+              size="sm"
+              className="rounded-md hover:bg-primary/10 hover:dark:bg-accent"
+            >
+              <span className="truncate">{title}</span>
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="p-2">
+            <div className="flex items-center gap-x-2">
+              <IconPicker
+                asChild
+                isOpen={isIconOpened}
+                onChange={onChangeIcon}
+                onOpenChange={(state) => setIsIconOpened(state)}
+              >
+                <Button
+                  variant="ghost"
+                  className="border p-1 rounded-md text-[18px]"
+                  onClick={() => setIsIconOpened(true)}
+                >
+                  {data?.icon ? data.icon : <File className="h-6 w-6" />}
+                </Button>
+              </IconPicker>
+              <Input
+                value={title}
+                onClick={enableInput}
+                onBlur={disableInput}
+                onChange={onChange}
+                onKeyDown={onKeyDown}
+                className="h-9 px-2 focus-visible:ring-transparent flex-1"
+              />
+            </div>
+          </PopoverContent>
+        </Popover>
+      </div>
+      <Popover>
+        <PopoverTrigger className="hover:dark:bg-accent p-1 rounded-md hover:bg-primary/10">
+          <MoreHorizontal />
+        </PopoverTrigger>
+        <PopoverContent className="max-w-[200px] p-1">
+          <ConfirmModal onConfirm={onDeleteConfirm}>
+            <div
+              className="flex items-center hover:dark:bg-accent hover:bg-primary/10 px-2 py-1 cursor-pointer rounded-md"
+              role="button"
+            >
+              <Trash className="mr-2 h-4 w-4" />
+              <span>Delete</span>
+            </div>
+          </ConfirmModal>
+          <TitlePDFItem content={data?.content} />
         </PopoverContent>
       </Popover>
     </div>
