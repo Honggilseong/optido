@@ -4,7 +4,7 @@ import UserProfile from "@/components/user-profile";
 import DocumentListItem from "./document-list-item";
 
 import { cn } from "@/lib/utils";
-import { ChevronsLeft, MenuIcon, Plus, Trash } from "lucide-react";
+import { ChevronsLeft, MenuIcon, Plus } from "lucide-react";
 import { ElementRef, useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "usehooks-ts";
 
@@ -13,14 +13,12 @@ import { createDocument } from "@/actions/create-document";
 
 import { Button } from "@/components/ui/button";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import DocumentTrash from "./document-trash";
+
 import { useParams, useRouter } from "next/navigation";
 import Header from "./header";
+import TrashItem from "./trash-item";
+import SearchItem from "./search-item";
+import SettingItem from "./setting-item";
 
 const Navbar = () => {
   const params = useParams();
@@ -132,23 +130,10 @@ const Navbar = () => {
         </Button>
         <DocumentListItem />
 
-        <Popover>
-          <div className="flex items-end">
-            <PopoverTrigger className="w-full hover:bg-primary/20">
-              <div className="flex items-center px-4 py-3">
-                <Trash className="shrink-0 h-[18px] mr-2 text-muted-foreground" />
-                <span className="text-muted-foreground">Trash</span>
-              </div>
-            </PopoverTrigger>
-          </div>
-          <PopoverContent
-            side={isMobile ? "bottom" : "right"}
-            className="p-0 w-72"
-          >
-            <DocumentTrash />
-          </PopoverContent>
-        </Popover>
-
+        {/* itemList */}
+        <SearchItem />
+        <TrashItem isMobile={isMobile} />
+        <SettingItem isMobile={isMobile} />
         <div
           onMouseDown={handleMouseDown}
           onClick={resetWidth}
