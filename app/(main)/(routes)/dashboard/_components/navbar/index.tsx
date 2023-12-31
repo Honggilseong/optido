@@ -1,4 +1,4 @@
-import { Settings, User } from "lucide-react";
+import { User } from "lucide-react";
 import NavItem from "./nav-item";
 import UserProfile from "../../../../../../components/user-profile";
 
@@ -7,11 +7,6 @@ const navItems = [
     label: "Dashboard",
     href: "/dashboard",
     icon: <User className="h-8 w-8" />,
-  },
-  {
-    label: "Settings",
-    href: "/dashboard/settings",
-    icon: <Settings className="h-8 w-8" />,
   },
 ];
 
