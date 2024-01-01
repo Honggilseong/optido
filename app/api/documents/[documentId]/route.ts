@@ -1,9 +1,16 @@
+import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { NextResponse } from "next/server";
 
-export async function GET({ params }: { params: { documentId: string } }) {
+export async function GET(
+  request: NextRequest,
+  {
+    params,
+  }: {
+    params: { documentId: string };
+  }
+) {
   try {
     const session = await getServerSession(authOptions);
 

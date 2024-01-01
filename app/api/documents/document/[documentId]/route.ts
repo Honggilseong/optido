@@ -1,11 +1,10 @@
-import type { NextApiRequest } from "next";
 import { db } from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
-  request: NextApiRequest,
+  request: NextRequest,
   { params }: { params: { documentId: string } }
 ) {
   try {
