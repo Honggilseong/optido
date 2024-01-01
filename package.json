@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@blocknote/core": "^0.10.1",
@@ -27,6 +28,7 @@
     "clsx": "^2.0.0",
     "cmdk": "^0.2.0",
     "emoji-picker-react": "^4.5.16",
+    "jspdf": "^2.5.1",
     "lodash": "^4.17.21",
     "lucide-react": "^0.294.0",
     "next": "14.0.3",
